@@ -1,4 +1,6 @@
 # node-red-contrib-scinan
+![Node.js CI](https://github.com/lodegaard/node-red-contrib-scinan/workflows/Node.js%20CI/badge.svg?branch=master)
+
 A Scinan integration node for Node Red. It provides the ability to control thermostats using the Scinan API
 
 Based on Petter Ruud's implementation for Homey. Check it out: https://github.com/PetterRuud/com.scinan.api/
