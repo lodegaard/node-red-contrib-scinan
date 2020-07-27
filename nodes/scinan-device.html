@@ -27,8 +27,7 @@
                 $('#node-input-device').replaceWith('<select id="node-input-device" style="width: 100%"></select>');
                 $('#node-input-device').append('<option value="null">' + 'Fetching' + '</option>');
                 
-                var serverConfig = RED.nodes.node($('#node-input-server option:selected').val());
-                $.get('/scinan/devices', {serverNodeId: serverConfig.id})
+                $.get('/scinan/devices')
                 .done(function(data) {
                     if (data.length <= 0)
                     {
