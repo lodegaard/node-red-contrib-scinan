@@ -165,6 +165,7 @@ scinan.prototype.getDeviceInfo = function(options, callback) {
 
     if (!options.device_id)
     {
+        console.error("Undefined device");
         return this;
     }
 

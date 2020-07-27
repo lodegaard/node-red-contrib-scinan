@@ -36,23 +36,39 @@ module.exports = function(RED) {
 
             if (typeof msg.payload != 'undefined' && typeof msg.payload.set != 'undefined')
             {
-                console.log(msg);
-                console.log(typeof msg.payload.set.target);
                 if (typeof msg.payload.set.target != 'undefined') {
                     requestSent = true;
                     api.setTemperature({device_id: this.device_id, value: msg.payload.set.target}, function (err, response) {
-                        node.send({payload: response});
-                    })
+                        if (response.result) {
+                            api.getDeviceInfo({device_id: node.device_id}, function (err, status){
+                                node.send({payload: status});
+                            });
+                        } else {
+                            node.send({payload: response});
+                        }
+                    });
                 } else if (typeof msg.payload.set.away != 'undefined') {
                     requestSent = true;
                     api.setAway({device_id: this.device_id, value: msg.payload.set.away}, function (err, response) {
-                        node.send({payload: response});
-                    })
+                        if (response.result) {
+                            api.getDeviceInfo({device_id: node.device_id}, function (err, status){
+                                node.send({payload: status});
+                            });
+                        } else {
+                            node.send({payload: response});
+                        }
+                    });
                 } else if (typeof msg.payload.set.mode != 'undefined') {
                     requestSent = true;
                     api.setMode({device_id: this.device_id, value: msg.payload.set.mode}, function (err, response) {
-                        node.send({payload: response});
-                    })
+                        if (response.result) {
+                            api.getDeviceInfo({device_id: node.device_id}, function (err, status){
+                                node.send({payload: status});
+                            });
+                        } else {
+                            node.send({payload: response});
+                        }
+                    });
                 }
             }
 
@@ -60,10 +76,7 @@ module.exports = function(RED) {
             if (msg.payload === "status" || msg.status || !requestSent)
             {
                 api.getDeviceInfo({device_id: this.device_id}, function (err, status){
-                    var newMsg = {
-                        payload: status
-                    }
-                    node.send(newMsg);
+                    node.send({payload: status});
                 });
             }
 
