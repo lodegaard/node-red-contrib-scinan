@@ -12,7 +12,31 @@ module.exports.getTimestamp = (date = new Date()) => {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   };
   
-  module.exports.getStatus = status => {
+module.exports.modeToValue = value => {
+    let mode;
+    if (value === MODES.COMFORT) {
+      mode = 0;
+    } else if (value === MODES.AUTO) {
+      mode = 1;
+    } else if (value === MODES.DAY_OR_NIGHT) {
+      mode = 2;
+    }
+    return mode;
+  }
+  
+module.exports.valueToMode = mode => {
+    let value;
+    if (mode === 0) {
+      value = MODES.COMFORT;
+    } else if (mode === 1) {
+      value = MODES.AUTO;
+    } else if (mode === 2) {
+      value = MODES.DAY_OR_NIGHT;
+    }
+    return value;
+  }
+
+module.exports.getStatus = status => {
     const statusSplit = status.split(',');
     // status[0] = 1564834881996 => time
     // status[1] = 1 => is_on (hvac)
@@ -37,26 +61,3 @@ module.exports.getTimestamp = (date = new Date()) => {
     };
   };
 
-  module.exports.modeToValue = value => {
-    let mode;
-    if (value === MODES.COMFORT) {
-      mode = 0;
-    } else if (value === MODES.AUTO) {
-      mode = 1;
-    } else if (value === MODES.DAY_OR_NIGHT) {
-      mode = 2;
-    }
-    return mode;
-  }
-  
-  module.exports.valueToMode = mode => {
-    let value;
-    if (mode === 0) {
-      value = MODES.COMFORT;
-    } else if (mode === 1) {
-      value = MODES.AUTO;
-    } else if (mode === 2) {
-      value = MODES.DAY_OR_NIGHT;
-    }
-    return value;
-  }

@@ -11,8 +11,16 @@ Based on Petter Ruud's implementation for Homey. Check it out: https://github.co
 
 ## Usage
 ### Getting status
-Retreives the current status of the thermostat
-|  Property     |  Type  |  Value   |                     Information                     |
-|:-----------:  |:------:|:--------:|:---------------------------------------------------:|
-| **payload**   | string | *status* | Retreive the status of the device                   |
-| **msg.status**| any    |  *any*   | Retreive the status of the device (alternate input) |
+Retreives the current status of the thermostat. Pass the **status** property to **msg.payload**, or set the **status** property in **msg**.
+|  Property     |  Type   |                     Information                        |
+|:-----------:  |:-------:|:------------------------------------------------------:|
+|  **status**   |   any   | Retreive the status of the device                      |
+| **msg.status**|   any   | Retreive the status of the device (alternate input)    |
+
+### Setting values
+Pass **set** property to **msg.payload**.
+|  Property     |  Type   |                      Information                       |
+|:-----------:  |:-------:|:------------------------------------------------------:|
+|    **away**   | boolean | True/False. Set away                                   |
+|  **target**   |  float  | Set the target temprature (5-27)                       |
+|   **mode**    | string  | Set oepration mode {*comfort*, *auto*, *day_or_night*} |

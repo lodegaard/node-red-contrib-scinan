@@ -81,7 +81,7 @@ scinan.prototype.authenticate = function(args, callback) {
             if (err || response.statusCode != 200) {
                 return this.handleRequestError(err, response, body, "Authenticate error", true);
             }
-
+            
             const start = body.indexOf('token:');
             const end = body.indexOf('\n', start);
             const token = body.substring(start + 6, end);
@@ -170,6 +170,7 @@ scinan.prototype.getDeviceInfo = function(options, callback) {
 
     var timestamp = getTimestamp(new Date());
     var url = `${LIST_URL}?format=json&timestamp=${timestamp}&token=${access_token}`;
+
     request({
         url: url,
         method: "GET",
@@ -182,7 +183,6 @@ scinan.prototype.getDeviceInfo = function(options, callback) {
             }
 
             body = JSON.parse(body);
-            
             var currentDevice;
             for (var i in body) {
                 if (body[i].id === options.device_id) {
@@ -192,10 +192,11 @@ scinan.prototype.getDeviceInfo = function(options, callback) {
             }
 
             var status = {};
-            if (currentDevice)
+            if (currentDevice) {
                 status = getStatus(currentDevice.status);
-            
-                this.emit('get-device-info', err, status);
+                status.mode = valueToMode(status.mode);
+            }
+            this.emit('get-device-info', err, status);
 
             if (callback) {
                 return callback(err, status);
@@ -208,6 +209,9 @@ scinan.prototype.getDeviceInfo = function(options, callback) {
 
 }
 
+/**
+ * 
+ */
 scinan.prototype.setCapabilityValues = function(options, callback) {
     if (!access_token) {
         return this.on('authenticated', function() {
@@ -231,7 +235,7 @@ scinan.prototype.setCapabilityValues = function(options, callback) {
             break;
         case 'mode':
             sensor_id = SENSORS.MODE;
-            control_data = `{%22value%22:%22${this.modeToValue(options.cap_value)}%22}`;
+            control_data = `{%22value%22:%22${modeToValue(options.cap_value)}%22}`;
             break;
         case 'away':
             sensor_id = SENSORS.AWAY;
@@ -242,31 +246,35 @@ scinan.prototype.setCapabilityValues = function(options, callback) {
     const timestamp = getTimestamp(new Date());
     const url = `${CONTROL_URL}?control_data=${control_data}&device_id=${options.device_id}&format=json&sensor_id=${sensor_id}&sensor_type=1&timestamp=${timestamp}&token=${access_token}`
 
-    console.log(url);
-    // request({
-    //     url: url,
-    //     method: "POST",
-    //     headers: {
-    //         "User-Agent": USER_AGENT
-    //     }},
-    //     function(err, response, body) {
-    //         if (err || response.statusCode != 200) {
-    //             return this.handleRequestError(err, response, body, `setCapabilityValues ${options.capability} error`);
-    //         }
+    request({
+        url: url,
+        method: "POST",
+        headers: {
+            "User-Agent": USER_AGENT
+        }},
+        function(err, response, body) {
+            if (err || response.statusCode != 200) {
+                return this.handleRequestError(err, response, body, `setCapabilityValues ${options.capability} error`);
+            }
             
-    //         body = JSON.parse(body);
-    //         console.log(body);
+            body = JSON.parse(body);
+            console.log(body);
+            
+            this.emit('set-capability', err, body);
 
-    //         if (callback) {
-    //             return callback(err, body);
-    //         }
+            if (callback) {
+                return callback(err, body);
+            }
 
-    //         return this;
-    //     }.bind(this));
+            return this;
+        }.bind(this));
     
     return this;
 }
 
+/**
+ * 
+ */
 scinan.prototype.setAway = function(options, callback) {
     if (!access_token) {
         return this.on('authenticated', function() {
@@ -284,7 +292,72 @@ scinan.prototype.setAway = function(options, callback) {
         capability: 'away',
         cap_value: options.value
     }, callback);
+}
 
+/**
+ * 
+ */
+scinan.prototype.setOnOff = function(options, callback) {
+    if (!access_token) {
+        return this.on('authenticated', function() {
+            this.setAway(options, callback);
+        })
+    }
+
+    if (!options.device_id)
+    {
+        return this;
+    }
+
+    return this.setCapabilityValues({
+        device_id: options.device_id,
+        capability: 'onoff',
+        cap_value: options.value
+    }, callback);
+}
+
+/**
+ * 
+ */
+scinan.prototype.setMode = function(options, callback) {
+    if (!access_token) {
+        return this.on('authenticated', function() {
+            this.setAway(options, callback);
+        })
+    }
+
+    if (!options.device_id)
+    {
+        return this;
+    }
+
+    return this.setCapabilityValues({
+        device_id: options.device_id,
+        capability: 'mode',
+        cap_value: options.value
+    }, callback);
+}
+
+/**
+ * 
+ */
+scinan.prototype.setTemperature = function(options, callback) {
+    if (!access_token) {
+        return this.on('authenticated', function() {
+            this.setAway(options, callback);
+        })
+    }
+
+    if (!options.device_id)
+    {
+        return this;
+    }
+
+    return this.setCapabilityValues({
+        device_id: options.device_id,
+        capability: 'target_temperature',
+        cap_value: options.value
+    }, callback);
 }
 
 module.exports = scinan;

@@ -8,13 +8,16 @@ module.exports = function(RED) {
 
         this.server = RED.nodes.getNode(config.server);
         this.device_id = config.device;
+
         
         if (this.server) {
+            node.status({fill:"green", shape:"ring", text:"-°C"});
             var api = new scinan({
                 username: this.server.credentials.username,
                 password: this.server.credentials.password
             });
         } else {
+            node.status({fill:"red", shape:"ring", text:"-°C"});
             var api = new scinan();
         }
 
@@ -25,11 +28,36 @@ module.exports = function(RED) {
         api.on('get-device-info', function(err, status) {
             console.log("Status event");
             console.log(status);
+            node.status({fill:"green", shape:"dot", text:status.measure_temperature+"°C"});
         })
         
         node.on('input', function(msg) {
-            
-            if (msg.payload === "status" || msg.status)
+            var requestSent = false;
+
+            if (typeof msg.payload != 'undefined' && typeof msg.payload.set != 'undefined')
+            {
+                console.log(msg);
+                console.log(typeof msg.payload.set.target);
+                if (typeof msg.payload.set.target != 'undefined') {
+                    requestSent = true;
+                    api.setTemperature({device_id: this.device_id, value: msg.payload.set.target}, function (err, response) {
+                        node.send({payload: response});
+                    })
+                } else if (typeof msg.payload.set.away != 'undefined') {
+                    requestSent = true;
+                    api.setAway({device_id: this.device_id, value: msg.payload.set.away}, function (err, response) {
+                        node.send({payload: response});
+                    })
+                } else if (typeof msg.payload.set.mode != 'undefined') {
+                    requestSent = true;
+                    api.setMode({device_id: this.device_id, value: msg.payload.set.mode}, function (err, response) {
+                        node.send({payload: response});
+                    })
+                }
+            }
+
+            // Default to get status
+            if (msg.payload === "status" || msg.status || !requestSent)
             {
                 api.getDeviceInfo({device_id: this.device_id}, function (err, status){
                     var newMsg = {
@@ -39,11 +67,6 @@ module.exports = function(RED) {
                 });
             }
 
-            if (msg.payload === 'away')
-            {
-                api.setAway({device_id: this.device_id, value: true})
-                node.send({payload: "sucess"});
-            }
         });
 
         node.on('close', function() {
