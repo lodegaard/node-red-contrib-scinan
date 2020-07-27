@@ -9,6 +9,15 @@ Based on Petter Ruud's implementation for Homey. Check it out: https://github.co
 ### ProSmart
 - PTS50W
 
+## Setup
+Use the configuration node to provide credentials for your Smart-E account. The device node can request thermostats from the server.
+
+## Available nodes
+- Scinan configuration
+- Scinan device
+
+![Scinan node example](https://user-images.githubusercontent.com/10208671/88537023-05e0eb00-d00d-11ea-9f5b-3d9604891323.png)
+
 ## Usage
 ### Getting status
 Retreives the current status of the thermostat. Pass the **status** property to **msg.payload**, or set the **status** property in **msg**.
