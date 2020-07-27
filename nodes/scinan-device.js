@@ -9,9 +9,9 @@ module.exports = function(RED) {
         this.server = RED.nodes.getNode(config.server);
         this.device_id = config.device;
 
+        node.status({fill:"grey", shape:"ring", text:"-°C"});
         
         if (this.server) {
-            node.status({fill:"green", shape:"ring", text:"-°C"});
             var api = new scinan({
                 username: this.server.credentials.username,
                 password: this.server.credentials.password
@@ -22,7 +22,8 @@ module.exports = function(RED) {
         }
 
         api.on('authenticated', function() {
-            console.log("API authenticated")
+            console.log("API authenticated");
+            node.status({fill:"green", shape:"fill", text:"-°C"});
         })
 
         api.on('get-device-info', function(err, status) {
