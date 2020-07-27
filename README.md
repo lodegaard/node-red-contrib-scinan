@@ -23,4 +23,4 @@ Pass **set** property to **msg.payload**.
 |:-----------:  |:-------:|:------------------------------------------------------:|
 |    **away**   | boolean | True/False. Set away                                   |
 |  **target**   |  float  | Set the target temprature (5-27)                       |
-|   **mode**    | string  | Set oepration mode {*comfort*, *auto*, *day_or_night*} |
+|   **mode**    | string  | Set opration mode {*comfort*, *auto*, *day_or_night*}  |

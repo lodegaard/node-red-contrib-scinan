@@ -101,16 +101,23 @@
     <p>Enter the device id, or fetch all devices from the server and select the thermostat you want to communicate with</p>
 
     <h3>Inputs</h3>
+    <p>Get the current status of the thermostat by injecting any input value</p>
     <dl class="message-properties">
-        <dt>payload : {"status"}
-            <span class="property-type">string</span>
-        </dt>
+        <dt>true<span class="property-type">boolean</span></dt>
         <dd> Get device status</dd>
     </dl>
+
+    <p>Use the set command to set properties on the thermostat. Pass the <b>set</b> property to <b>msg.payload</b></p>
     <dl class="message-properties">
-        <dt>status : {}
-            <span class="property-type">string</span>
-        </dt>
-        <dd> Get device status</dd>
+        <dt>away<span class="property-type">boolean</span></dt>
+        <dd> Set away (true/false)</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>target<span class="property-type">float</span></dt>
+        <dd> Set the target temperature (5-27) in celsius</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>mode<span class="property-type">string</span></dt>
+        <dd> Set opration mode {<i>comfort</i>, <i>auto</i>, <i>day_or_night</i>}</dd>
     </dl>
 </script>
