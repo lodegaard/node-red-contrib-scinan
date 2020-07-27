@@ -22,14 +22,14 @@ Use the configuration node to provide credentials for your Smart-E account. The 
 ### Getting status
 Retreives the current status of the thermostat. Pass the **status** property to **msg.payload**, or set the **status** property in **msg**.
 |  Property     |  Type   |                     Information                        |
-|:-----------:  |:-------:|:------------------------------------------------------:|
+|:-------------:|:-------:|:------------------------------------------------------:|
 |  **status**   |   any   | Retreive the status of the device                      |
 | **msg.status**|   any   | Retreive the status of the device (alternate input)    |
 
 ### Setting values
 Pass **set** property to **msg.payload**.
 |  Property     |  Type   |                      Information                       |
-|:-----------:  |:-------:|:------------------------------------------------------:|
-|    **away**   | boolean | True/False. Set away                                   |
+|:-------------:|:-------:|:------------------------------------------------------:|
+|   **away**    | boolean | True/False. Set away                                   |
 |  **target**   |  float  | Set the target temprature (5-27)                       |
 |   **mode**    | string  | Set opration mode {*comfort*, *auto*, *day_or_night*}  |
