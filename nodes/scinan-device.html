@@ -1,0 +1,116 @@
+<script type="text/javascript">
+    RED.nodes.registerType('scinan-device',{
+        category: 'scinan',
+        color: '#DEB887',
+        defaults: {
+            name: {value:""},
+            device: {value:""},
+            server: {value:"", type:"scinan-device-config", required: true}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-bolt",
+        label: function() {
+            return this.name||"scinan-device";
+        },
+        oneditprepare: function() {
+            var scope = this;
+
+            function manualDeviceId() {
+                var current = $("#node-input-device").val();
+                $("#node-input-device").replaceWith('<input type="text" id="node-input-device" style="width: 100%">');
+                $("#node-input-device").val("Manual");
+            }
+
+            function fillDeviceList() {
+                var current = $("#node-input-device").val();
+                $('#node-input-device').replaceWith('<select id="node-input-device" style="width: 100%"></select>');
+                $('#node-input-device').append('<option value="null">' + 'Fetching' + '</option>');
+                
+                var serverConfig = RED.nodes.node($('#node-input-server option:selected').val());
+                $.get('/scinan/devices', {serverNodeId: serverConfig.id})
+                .done(function(data) {
+                    if (data.length <= 0)
+                    {
+                        //Error
+                    }
+                    $('#node-input-device').empty()
+                    data.forEach(function(device) {
+                        $('#node-input-device').append('<option value="' + device.id + '">' + device.name + '</option>');
+                    });
+                    
+                    $("#node-input-device").val(current);
+                })
+                .fail(function() {
+                    //Error
+                });
+
+            }
+
+            $(document).on('change', '#node-input-device', function()
+            {
+                var deviceName = $('#node-input-device option:selected').text();
+                if(deviceName.length > 0)
+                {
+                    $('#node-input-name').val(deviceName);
+                }
+            });
+
+            $("#node-config-input-scan-devices").click(function () {
+                if ($("#node-input-device").prop("tagName") === "INPUT")
+                {
+                    console.log("Auto scan");
+                    fillDeviceList();
+                } else {
+                    console.log("Manual");
+                    manualDeviceId();
+                }
+            });
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="scinan-device">
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-server"></i> Config</label>
+        <input type="text" id="node-input-server">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-device"><i class="fa fa-thermometer"></i> Device</label>
+        <!--<input type="text" id="node-input-device" placeholder="Device">-->
+        <div style="display: inline-block; position: relative; width: 70%; height: 20px;">
+            <div style="position: absolute; left: 0px; right: 40px;">
+                <input type="text" id="node-input-device" placeholder="1" style="width: 100%"/>
+            </div>
+            <a id="node-config-input-scan-devices" class="editor-button" style="position: absolute; right: 0px; top: 0px;">
+                <i class="fa fa-search"></i>
+            </a>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="scinan-device">
+    <p>Node to control thermostats using the Scinan API.</p>
+
+    <h3>Setup</h3>
+    <p>In the configuration node, setup the username and password for your Smart-E account.</p>
+    <p>Enter the device id, or fetch all devices from the server and select the thermostat you want to communicate with</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload : {"status"}
+            <span class="property-type">string</span>
+        </dt>
+        <dd> Get device status</dd>
+    </dl>
+    <dl class="message-properties">
+        <dt>status : {}
+            <span class="property-type">string</span>
+        </dt>
+        <dd> Get device status</dd>
+    </dl>
+</script>

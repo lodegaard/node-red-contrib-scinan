@@ -1,0 +1,30 @@
+{
+  "name": "node-red-contrib-scinan",
+  "node-red": {
+    "nodes": {
+      "scinan-device-config": "nodes/scinan-device-config.js",
+      "scinan-device": "nodes/scinan-device.js"
+    }
+  },
+  "version": "0.0.1",
+  "main": "scinan-device.js",
+  "scripts": {
+    "test": "mocha \"test/**/*_spec.js\"",
+    "test-api": "node test/api-test.js"
+  },
+  "author": "Lars Ødegaard <larsoedegaard@gmail.com>",
+  "license": "ISC",
+  "description": "An adaptation of the Scinan device API for Node Red",
+  "devDependencies": {
+    "mocha": "^8.0.1",
+    "node-red": "^1.1.2",
+    "node-red-node-test-helper": "^0.2.5"
+  },
+  "dependencies": {
+    "request": "^2.88.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https@github.com:lodegaard/node-red-contrib-scinan.git"
+  }
+}
