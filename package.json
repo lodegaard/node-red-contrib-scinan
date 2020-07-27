@@ -13,7 +13,7 @@
     "test-api": "node test/api-test.js"
   },
   "author": "Lars Ødegaard <larsoedegaard@gmail.com>",
-  "license": "ISC",
+  "license": "GPL-3.0",
   "description": "An adaptation of the Scinan device API for Node Red",
   "devDependencies": {
     "mocha": "^8.0.1",
